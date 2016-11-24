@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
-import './css/reset.css';
-import './css/base.css';
-import Header from './componentes/Header';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="main">
-
-
-      <Header/>
-
-
+export default class Timeline extends Component {
+	render(){
         <div className="fotos container">
           <div className="foto">
             <header className="foto-header">
@@ -140,10 +130,6 @@ class App extends Component {
             </section>
           </div>
 
-        </div>
-      </div>
-    );
-  }
+        </div>		
+	}
 }
-
-export default App;

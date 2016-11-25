@@ -15,6 +15,6 @@ ReactDOM.render((
 		<Router history={browserHistory}>	    	
 			<Route path="/" component={Login}/>
 			<Route path="/logout" component={Logout}/>	    	    	
-	    	<Route path="/timeline" component={App} onEnter={verificaAutenticacao}/>	    	    	
+	    	<Route path="/timeline(/:login)" component={App} onEnter={verificaAutenticacao}/>	    	    	
 	    </Router>
 ), document.getElementById('root'));

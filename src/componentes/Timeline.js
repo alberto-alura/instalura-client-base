@@ -4,17 +4,17 @@ import FotoItem from './FotoItem'
 export default class Timeline extends Component {
 
 	constructor(){
-		super();
-		this.state = {fotos:[]};
+		super();		
+		this.state = {fotos:[]};		
 	}
 
 	componentDidMount(){
-		fetch("http://localhost:8080/api/fotos?X-AUTH-TOKEN="+localStorage.getItem('auth-token'))
+		fetch(`http://localhost:8080/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`)
 			.then(response => {
 				return response.json();
 			})
 			.then(fotos => {				
-				this.setState({fotos:fotos});
+				this.setState({fotos});
 			});
 	}
 

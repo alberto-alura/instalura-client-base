@@ -5,8 +5,8 @@ import { browserHistory } from 'react-router'
 export default class Login extends Component {
 
 	constructor(props) {
-		super();
-		this.state = {login: '', senha: '',msg:''};
+		super();		
+		this.state = {login: '', senha: '',msg:props.location.query.msg};
 		this.envia = this.envia.bind(this);		
 	} 
 

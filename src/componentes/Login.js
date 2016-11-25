@@ -30,28 +30,17 @@ export default class Login extends Component {
 
 		fetch('http://localhost:8080/api/public/login',requestInfo)
 			.then(response => {
-				if(response.ok){					
-					browserHistory.push("/timeline");				
+				if(response.ok){
+					return response.text();											
 				} else {
 					this.setState({msg:"login ou senha inválidos"});
 				}
+			})
+			.then(token => {
+				localStorage.setItem('auth-token', token);
+				browserHistory.push("/timeline");				
 			});
 
-
-		// $.ajax({
-		// 	url: 'http://localhost:8080/api/public/login',
-		// 	type: 'POST',
-		// 	data: JSON.stringify({login: login, senha: senha}),
-		// 	contentType: 'application/json',
-		// 	success: (resposta) => {
-		// 		localStorage.setItem('auth-token', resposta);
-		// 		this.setState({login: '', senha: ''});				
-		// 		browserHistory.push("/timeline");				
-		// 	},
-		// 	error: (resposta) => {		
-		// 		console.log(resposta);
-		// 	}
-		// });		
 	}
 
 	render() {	

@@ -34,13 +34,35 @@ class FotoHeader extends Component {
 }
 
 class FotoInfo extends Component {
+
+	constructor(props){
+		super();
+		this.state = {likers : props.foto.likers,comentarios : props.foto.comentarios};
+	}
+
+
+ componentWillMount(){
+	 PubSub.subscribe("adiciona-liker",(msg,object) => {
+		 if(this.props.foto.id === object.fotoId){		 
+			const likers = this.state.likers.concat(object.liker);		 
+			this.setState({likers});		 
+		 }
+	 });
+
+	 PubSub.subscribe("remove-liker",(msg,object) => {
+		 if(this.props.foto.id === object.fotoId){		 					 
+			this.setState({likers : this.state.likers.filter( liker => liker.login !== object.liker.login)});
+		 }
+	 });	 
+ }
+
 	render(){
 		return (
             <div className="foto-info">
               <div className="foto-info-likes">
 
               	{
-              		this.props.foto.likers.map(liker => {
+              		this.state.likers.map(liker => {
               			return (
 			                <Link key={liker.login} to={`/timeline/${liker.login}`}>
 			                  {liker.login},
@@ -96,8 +118,15 @@ class FotoAtualizacoes extends Component {
 					console.error("nao foi possivel fazer o like/dislike");
 				}
 			})
-			.then(liker => {
-				this.setState({likeada : !this.state.likeada});
+			.then(liker => {								
+				const likeada = !this.state.likeada;
+				this.setState({likeada});
+
+				if(likeada) {
+					PubSub.publish("adiciona-liker",{fotoId : this.props.foto.id,liker});
+				} else {
+					PubSub.publish("remove-liker",{fotoId : this.props.foto.id,liker});
+				}
 			})				
 	}
 

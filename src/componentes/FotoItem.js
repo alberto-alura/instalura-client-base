@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
+import PubSub from 'pubsub-js';
 
 export default class FotoItem extends Component {
 	render() {
@@ -74,10 +75,37 @@ class FotoInfo extends Component {
 }
 
 class FotoAtualizacoes extends Component {
+
+	constructor(props){
+		super();
+		this.state = {likeada : props.foto.likeada};
+	}
+
+  like(event) {
+		event.preventDefault();
+
+		const requestInfo = {
+			method:'POST'
+		};
+
+		fetch(`http://localhost:8080/api/fotos/${this.props.foto.id}/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
+			.then(response => {
+				if(response.ok){
+					return response.json();											
+				} else {
+					console.error("nao foi possivel fazer o like/dislike");
+				}
+			})
+			.then(liker => {
+				this.setState({likeada : !this.state.likeada});
+			})				
+	}
+
+
 	render(){
 		return (
             <section className="fotoAtualizacoes">
-              <a href="#" className="fotoAtualizacoes-like">Likar</a>
+              <a onClick={this.like.bind(this)} className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
               <form className="fotoAtualizacoes-form">
                 <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo"/>
                 <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit"/>

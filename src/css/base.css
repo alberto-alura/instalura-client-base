@@ -186,10 +186,16 @@ body {
   margin-right: 1em;
 }
 
-.fotoAtualizacoes-like:hover {
-  background-image: url(../imgs/s2-check.png)
+.fotoAtualizacoes-like-ativo {
+  background: url(../imgs/s2-check.png) no-repeat center center;
+  background-size: 32px 32px;
+  width: 44px;
+  height: 44px;
+  text-indent: -9999px;
+  display: inline-block;
+  transition: .4s;
+  margin-right: 1em;
 }
-
 
 .fotoAtualizacoes-form {
   display: flex;

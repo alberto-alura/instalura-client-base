@@ -18,12 +18,30 @@ export default class Timeline extends Component {
 		this.urlTimeline = urlTimeline;		
 		this.state = {fotos:[]};
 		this.carregaFotos = this.carregaFotos.bind(this);				 		
-	}
+	}	
 
 	componentWillMount(){
 		PubSub.subscribe('timeline',(topic,{fotos}) => {			
 			this.setState({fotos});
 		});
+
+		PubSub.subscribe("adiciona-liker",(msg,object) => {
+			const fotoAchada = this.state.fotos.filter(foto => foto.id === object.fotoId)[0];
+			fotoAchada.likers.push(object.liker);					
+			this.setState({fotos:this.state.fotos});
+		});
+
+		PubSub.subscribe("remove-liker",(msg,object) => {
+			const fotoAchada = this.state.fotos.filter(foto => foto.id === object.fotoId)[0];
+			fotoAchada.likers = fotoAchada.likers.filter( liker => liker.login !== object.liker.login);			
+			this.setState({fotos:this.state.fotos});
+		});	 
+
+		PubSub.subscribe("adiciona-comentario",(msg,object) => {
+			const fotoAchada = this.state.fotos.filter(foto => foto.id === object.fotoId)[0];
+			fotoAchada.comentarios = fotoAchada.comentarios.concat(object.novoComentario);
+			this.setState({fotos:this.state.fotos});
+		});		
 	}
 
 	carregaFotos(){		
@@ -91,7 +109,9 @@ export default class Timeline extends Component {
 					PubSub.publish("adiciona-comentario",{fotoId,novoComentario});
 			})		
 
-	}	
+	}
+
+
 
 	render(){
         return (<div className="fotos container">

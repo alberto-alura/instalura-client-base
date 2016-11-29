@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
-import PubSub from 'pubsub-js';
 
 export default class FotoItem extends Component {
 	render() {
@@ -36,40 +35,13 @@ class FotoHeader extends Component {
 
 class FotoInfo extends Component {
 
-	constructor(props){
-		super();
-		this.state = {likers : props.foto.likers,comentarios : props.foto.comentarios};
-	}
-
-
- componentWillMount(){
-	 PubSub.subscribe("adiciona-liker",(msg,object) => {
-		 if(this.props.foto.id === object.fotoId){		 
-			const likers = this.state.likers.concat(object.liker);		 
-			this.setState({likers});		 
-		 }
-	 });
-
-	 PubSub.subscribe("remove-liker",(msg,object) => {
-		 if(this.props.foto.id === object.fotoId){		 					 
-			this.setState({likers : this.state.likers.filter( liker => liker.login !== object.liker.login)});
-		 }
-	 });	 
-
-	 PubSub.subscribe("adiciona-comentario",(msg,object) => {
-		 if(this.props.foto.id === object.fotoId){		 							
-			this.setState({comentarios : this.state.comentarios.concat(object.novoComentario)});
-		 }
-	 });	 
- }
-
-	render(){
+	render(){		
 		return (
             <div className="foto-info">
               <div className="foto-info-likes">
 
               	{
-              		this.state.likers.map(liker => {
+              		this.props.foto.likers.map(liker => {
               			return (
 			                <Link key={liker.login} to={`/timeline/${liker.login}`}>
 			                  {liker.login},
@@ -88,7 +60,7 @@ class FotoInfo extends Component {
 
               <ul className="foto-info-comentarios">
               	{
-              		this.state.comentarios.map(comentario => {
+              		this.props.foto.comentarios.map(comentario => {
               			return (
 			                <li key={comentario.id} className="comentario">
 			                  <a className="foto-info-autor">{comentario.login} </a>
@@ -118,7 +90,7 @@ class FotoAtualizacoes extends Component {
 		event.preventDefault();
 		const likeada = !this.state.likeada;
 		this.setState({likeada});
-		
+
 		this.props.likeCallback(this.props.foto.id,likeada);
 	}	
 

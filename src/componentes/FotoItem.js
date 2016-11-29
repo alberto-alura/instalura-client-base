@@ -4,12 +4,13 @@ import PubSub from 'pubsub-js';
 
 export default class FotoItem extends Component {
 	render() {
+		const {comentaCallback,likeCallback,foto} = this.props;
 		return (
           <div className="foto">
-          	<FotoHeader foto={this.props.foto}/>
-            <img alt="foto" className="foto-src" src={this.props.foto.urlFoto}/>
-            <FotoInfo foto={this.props.foto}/>
-            <FotoAtualizacoes foto={this.props.foto}/>
+          	<FotoHeader foto={foto}/>
+            <img alt="foto" className="foto-src" src={foto.urlFoto}/>
+            <FotoInfo foto={foto}/>
+            <FotoAtualizacoes foto={foto} comentaCallback={comentaCallback} likeCallback={likeCallback}/>
           </div>          			
 		);
 	}
@@ -109,61 +110,22 @@ class FotoAtualizacoes extends Component {
 		this.state = {likeada : props.foto.likeada,comentario:''};
 	}
 
-  like(event) {
-		event.preventDefault();
-
-		const requestInfo = {
-			method:'POST'
-		};
-
-		fetch(`http://localhost:8080/api/fotos/${this.props.foto.id}/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
-			.then(response => {
-				if(response.ok){
-					return response.json();											
-				} else {
-					console.error("nao foi possivel fazer o like/dislike");
-				}
-			})
-			.then(liker => {								
-				const likeada = !this.state.likeada;
-				this.setState({likeada});
-
-				if(likeada) {
-					PubSub.publish("adiciona-liker",{fotoId : this.props.foto.id,liker});
-				} else {
-					PubSub.publish("remove-liker",{fotoId : this.props.foto.id,liker});
-				}
-			})				
-	}
-
 	lidaComInput(event){
 		this.setState({comentario:event.target.value});
 	}
 
+	like(event){
+		event.preventDefault();
+		const likeada = !this.state.likeada;
+		this.setState({likeada});
+		
+		this.props.likeCallback(this.props.foto.id,likeada);
+	}	
+
 	comenta(event){
 		event.preventDefault();
-		const requestInfo = {
-			method:'POST',
-			body:JSON.stringify({texto:this.state.comentario}),
-			headers: new Headers({
-				'Content-Type':'application/json'	
-			})			
-		};
-
-		fetch(`http://localhost:8080/api/fotos/${this.props.foto.id}/comment?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
-			.then(response => {
-				if(response.ok){
-					return response.json();											
-				} else {
-					console.error("nao foi possivel fazer o comentario");
-				}
-			})
-			.then(novoComentario => {								
-					PubSub.publish("adiciona-comentario",{fotoId:this.props.foto.id,novoComentario});
-			})		
-
+		this.props.comentaCallback(this.props.foto.id,this.state.comentario);
 	}
-
 
 	render(){
 		return (

@@ -54,6 +54,12 @@ class FotoInfo extends Component {
 			this.setState({likers : this.state.likers.filter( liker => liker.login !== object.liker.login)});
 		 }
 	 });	 
+
+	 PubSub.subscribe("adiciona-comentario",(msg,object) => {
+		 if(this.props.foto.id === object.fotoId){		 							
+			this.setState({comentarios : this.state.comentarios.concat(object.novoComentario)});
+		 }
+	 });	 
  }
 
 	render(){
@@ -81,7 +87,7 @@ class FotoInfo extends Component {
 
               <ul className="foto-info-comentarios">
               	{
-              		this.props.foto.comentarios.map(comentario => {
+              		this.state.comentarios.map(comentario => {
               			return (
 			                <li key={comentario.id} className="comentario">
 			                  <a className="foto-info-autor">{comentario.login} </a>
@@ -100,7 +106,7 @@ class FotoAtualizacoes extends Component {
 
 	constructor(props){
 		super();
-		this.state = {likeada : props.foto.likeada};
+		this.state = {likeada : props.foto.likeada,comentario:''};
 	}
 
   like(event) {
@@ -130,13 +136,41 @@ class FotoAtualizacoes extends Component {
 			})				
 	}
 
+	lidaComInput(event){
+		this.setState({comentario:event.target.value});
+	}
+
+	comenta(event){
+		event.preventDefault();
+		const requestInfo = {
+			method:'POST',
+			body:JSON.stringify({texto:this.state.comentario}),
+			headers: new Headers({
+				'Content-Type':'application/json'	
+			})			
+		};
+
+		fetch(`http://localhost:8080/api/fotos/${this.props.foto.id}/comment?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
+			.then(response => {
+				if(response.ok){
+					return response.json();											
+				} else {
+					console.error("nao foi possivel fazer o comentario");
+				}
+			})
+			.then(novoComentario => {								
+					PubSub.publish("adiciona-comentario",{fotoId:this.props.foto.id,novoComentario});
+			})		
+
+	}
+
 
 	render(){
 		return (
             <section className="fotoAtualizacoes">
               <a onClick={this.like.bind(this)} className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
-              <form className="fotoAtualizacoes-form">
-                <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo"/>
+              <form className="fotoAtualizacoes-form" onSubmit={this.comenta.bind(this)}>
+                <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" required onChange={this.lidaComInput.bind(this)}/>
                 <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit"/>
               </form>
 

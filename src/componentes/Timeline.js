@@ -50,7 +50,9 @@ export default class Timeline extends Component {
 	render(){
         return (<div className="fotos container">
 			<ReactCSSTransitionGroup 
-			transitionName="timeline">		
+			transitionName="timeline"
+		    transitionEnterTimeout={500}
+            transitionLeaveTimeout={300}>		
 						{
 							this.state.fotos.map(foto => {
 								return <FotoItem key={foto.id} foto={foto}/>;

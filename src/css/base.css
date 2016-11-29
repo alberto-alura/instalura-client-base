@@ -215,3 +215,21 @@ body {
   color: #fff;
   height: 2.4em;
 }
+
+.timeline-enter {
+  opacity: 0.01;
+}
+
+.timeline-enter.timeline-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.timeline-leave {
+  opacity: 1;
+}
+
+.timeline-leave.timeline-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}      

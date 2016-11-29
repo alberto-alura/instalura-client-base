@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import FotoItem from './FotoItem'
+import FotoItem from './FotoItem';
+import PubSub from 'pubsub-js';
+import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
+
 
 export default class Timeline extends Component {
 	
@@ -13,21 +16,28 @@ export default class Timeline extends Component {
 			urlTimeline = `http://localhost:8080/api/public/fotos/${props.login}`;
 		}	
 		this.urlTimeline = urlTimeline;		
-		this.state = {fotos:[]};				 		
+		this.state = {fotos:[]};
+		this.carregaFotos = this.carregaFotos.bind(this);				 		
 	}
 
-	carregaFotos(component){		
-		fetch(component.urlTimeline)
+	componentWillMount(){
+		PubSub.subscribe('timeline',(topic,{fotos}) => {			
+			this.setState({fotos});
+		});
+	}
+
+	carregaFotos(){		
+		fetch(this.urlTimeline)
 			.then(response => {
 				return response.json();
 			})
 			.then(fotos => {				
-				component.setState({fotos});
+				this.setState({fotos});
 			});		
 	}	
 
 	componentDidMount(){			
-		this.carregaFotos(this);
+		this.carregaFotos();
 	}
 
 	componentWillReceiveProps(nextProps){		
@@ -39,12 +49,15 @@ export default class Timeline extends Component {
 
 	render(){
         return (<div className="fotos container">
-        			{
-        				this.state.fotos.map(foto => {
-        					return <FotoItem key={foto.id} foto={foto}/>;
-        				})
-        			}          			                   		
-				</div>        
+			<ReactCSSTransitionGroup 
+			transitionName="timeline">		
+						{
+							this.state.fotos.map(foto => {
+								return <FotoItem key={foto.id} foto={foto}/>;
+							})
+						} 
+			</ReactCSSTransitionGroup>         			                   		
+		</div>        
         		);
 	}
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FotoItem from './FotoItem';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
-import TimelineStore from '../actions/TimelineStore';
+import TimelineApi from '../actions/TimelineApi';
 
 
 export default class Timeline extends Component {
@@ -27,22 +27,22 @@ export default class Timeline extends Component {
 	}
 
 	componentDidMount(){			
-		this.props.store.dispatch(TimelineStore.lista(this.urlTimeline));
+		this.props.store.dispatch(TimelineApi.lista(this.urlTimeline));
 	}
 
 	componentWillReceiveProps(nextProps){		
 		if(nextProps.login !== undefined){
 			this.urlTimeline = `http://localhost:8080/api/public/fotos/${nextProps.login}`;
-			this.props.store.dispatch(TimelineStore.lista(this.urlTimeline));
+			this.props.store.dispatch(TimelineApi.lista(this.urlTimeline));
 		}
 	}
 
   like(fotoId,likeada) {		
-	this.props.store.dispatch(TimelineStore.like(fotoId,likeada));	  
+	this.props.store.dispatch(TimelineApi.like(fotoId,likeada));	  
   }
 
   comenta(fotoId,texto){		
-	  this.props.store.dispatch(TimelineStore.comenta(fotoId,texto));
+	  this.props.store.dispatch(TimelineApi.comenta(fotoId,texto));
   }
 
 

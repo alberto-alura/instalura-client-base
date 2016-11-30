@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FotoItem from './FotoItem';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
+import TimelineStore from '../actions/TimelineStore';
 
 
 export default class Timeline extends Component {
@@ -20,13 +21,13 @@ export default class Timeline extends Component {
 	}	
 
 	componentWillMount(){
-		this.props.timelineStore.subscribe(fotos => {
-			this.setState({fotos});
+		this.props.store.subscribe(() => {			
+			this.setState({fotos:this.props.store.getState()});
 		});		 
 	}
 
 	componentDidMount(){			
-		this.props.timelineStore.lista(this.urlTimeline);
+		this.props.store.dispatch(TimelineStore.lista(this.urlTimeline));
 	}
 
 	componentWillReceiveProps(nextProps){		

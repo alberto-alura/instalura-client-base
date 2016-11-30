@@ -6,15 +6,17 @@ export default class TimelineStore {
         this.listaFotos = listaFotos;
     }
 
-	lista(urlTimeline){
-		fetch(urlTimeline)
-			.then(response => {
-				return response.json();
-			})
-			.then(fotos => {	
-				this.listaFotos = fotos;			
-				PubSub.publish("timeline",{fotos:this.listaFotos});
-			});		
+	static lista(urlTimeline){
+		return (dispatch) => { 
+			return fetch(urlTimeline)
+				.then(response => {
+					return response.json();
+				})
+				.then(fotos => {
+					dispatch({type:'LISTAGEM',fotos});	
+					return fotos;
+				});	
+		}	
 	}
 
     like(fotoId,likeada) {

@@ -1,4 +1,3 @@
-import PubSub from 'pubsub-js';
 import {listagem,like,comentario} from '../actions/actionCreator'
 
 export default class TimelineApi {
@@ -60,20 +59,15 @@ export default class TimelineApi {
 		}
     }   
 	
-	pesquisa(login) {
-		fetch(`http://localhost:8080/api/public/fotos/${login}`)
+	static pesquisa(login) {
+		return (dispatch) => {
+			return fetch(`http://localhost:8080/api/public/fotos/${login}`)
 			.then(response => {
 				return response.json();
 			})
 			.then(fotos => {
-				this.listaFotos = fotos;				
-				PubSub.publish('timeline',{fotos:this.listaFotos});
-			});		
-	}	
-
-	subscribe(callback) {
-		PubSub.subscribe('timeline',(topic,{fotos}) => {						
-			callback(fotos);
-		});		
-	}     
+				dispatch(listagem(fotos));
+			});	
+		}	
+	}	     
 }

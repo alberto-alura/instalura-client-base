@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TimelineApi from '../api/TimelineApi';
 
 
 export default class Header extends Component {
@@ -11,7 +12,7 @@ export default class Header extends Component {
 
   busca(event){
     event.preventDefault();
-    this.props.store.pesquisa(this.login.value);    
+    this.props.store.dispatch(TimelineApi.pesquisa(this.login.value));    
   }
 
 	render(){

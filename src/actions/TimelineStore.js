@@ -63,5 +63,16 @@ export default class TimelineStore {
                 fotoAchada.comentarios = fotoAchada.comentarios.concat(novoComentario); 
                 PubSub.publish("timeline",{fotos:this.listaFotos});                               												
 			})
-    }        
+    }   
+	
+	pesquisa(login) {
+		fetch(`http://localhost:8080/api/public/fotos/${login}`)
+			.then(response => {
+				return response.json();
+			})
+			.then(fotos => {
+				this.listaFotos = fotos;				
+				PubSub.publish('timeline',{fotos:this.listaFotos});
+			});		
+	}	     
 }

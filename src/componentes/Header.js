@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import PubSub from 'pubsub-js';
 
 
 export default class Header extends Component {
 
   busca(event){
     event.preventDefault();
-		fetch(`http://localhost:8080/api/public/fotos/${this.login.value}`)
-			.then(response => {
-				return response.json();
-			})
-			.then(fotos => {				
-				PubSub.publish('timeline',{fotos})
-			});    
+    this.props.timelineStore.pesquisa(this.login.value);    
   }
 
 	render(){
@@ -31,7 +24,7 @@ export default class Header extends Component {
 
 
           <nav>
-            <ul className="header-nav">
+            <ul className="header-nav">              
               <li className="header-nav-item">
                 <a href="#">
                   ♡

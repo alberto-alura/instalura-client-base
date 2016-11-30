@@ -6,6 +6,17 @@ export default class TimelineStore {
         this.listaFotos = listaFotos;
     }
 
+	lista(urlTimeline){
+		fetch(urlTimeline)
+			.then(response => {
+				return response.json();
+			})
+			.then(fotos => {	
+				this.listaFotos = fotos;			
+				PubSub.publish("timeline",{fotos:this.listaFotos});
+			});		
+	}
+
     like(fotoId,likeada) {
 		const requestInfo = {
 			method:'POST'

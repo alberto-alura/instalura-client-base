@@ -18,8 +18,7 @@ export default class Timeline extends Component {
 		}	
 
 		this.urlTimeline = urlTimeline;		
-		this.state = {fotos:[]};
-		this.carregaFotos = this.carregaFotos.bind(this);		
+		this.state = {fotos:[]};				
 		this.timelineStore = new TimelineStore(this.state.fotos);				 		
 	}	
 
@@ -29,25 +28,14 @@ export default class Timeline extends Component {
 		});	 
 	}
 
-	carregaFotos(){		
-		fetch(this.urlTimeline)
-			.then(response => {
-				return response.json();
-			})
-			.then(fotos => {	
-				this.timelineStore = new TimelineStore(fotos);			
-				this.setState({fotos});
-			});		
-	}	
-
 	componentDidMount(){			
-		this.carregaFotos();
+		this.timelineStore.lista(this.urlTimeline);
 	}
 
 	componentWillReceiveProps(nextProps){		
 		if(nextProps.login !== undefined){
 			this.urlTimeline = `http://localhost:8080/api/public/fotos/${nextProps.login}`;
-			this.carregaFotos(this);
+			this.timelineStore.lista(this.urlTimeline);
 		}
 	}
 

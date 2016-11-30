@@ -38,7 +38,7 @@ export default class Timeline extends Component {
 	}
 
   like(fotoId,likeada) {		
-	this.props.timelineStore.like(fotoId,likeada);	  
+	this.props.store.like(Timeline.like(fotoId,likeada));	  
   }
 
   comenta(fotoId,texto){		

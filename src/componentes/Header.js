@@ -4,9 +4,14 @@ import TimelineApi from '../api/TimelineApi';
 
 export default class Header extends Component {
 
+  constructor(){
+    super();
+    this.state = {msg:''};
+  }
+
   componentWillMount(){
     this.props.store.subscribe(() => {
-			console.log(this.props.store);
+			this.setState({msg:this.props.store.getState().notificacao});
 		});
   }
 
@@ -31,8 +36,9 @@ export default class Header extends Component {
 
 
           <nav>
-            <ul className="header-nav">              
+            <ul className="header-nav">                            
               <li className="header-nav-item">
+                <span>{this.state.msg}</span>
                 <a href="#">
                   ♡
                   {/**                 ♥**/}

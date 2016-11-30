@@ -1,4 +1,4 @@
-import {listagem,like,comentario} from '../actions/actionCreator'
+import {listagem,like,comentario,notifica,notificaFinalizado} from '../actions/actionCreator'
 
 export default class TimelineApi {
 
@@ -59,13 +59,19 @@ export default class TimelineApi {
 		}
     }   
 	
-	static pesquisa(login) {
+	static pesquisa(login) {		
 		return (dispatch) => {
+			dispatch(notifica("pesquisando"));
 			return fetch(`http://localhost:8080/api/public/fotos/${login}`)
 			.then(response => {
 				return response.json();
 			})
 			.then(fotos => {
+				if(fotos.length > 0) {
+					dispatch(notificaFinalizado());
+				} else {
+					dispatch(notifica("usuario não encontrado"));
+				}
 				dispatch(listagem(fotos));
 			});	
 		}	

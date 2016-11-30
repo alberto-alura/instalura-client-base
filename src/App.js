@@ -3,15 +3,22 @@ import './css/reset.css';
 import './css/base.css';
 import Header from './componentes/Header';
 import Timeline from './componentes/Timeline';
-import { createStore,applyMiddleware } from 'redux';
+import { createStore,applyMiddleware,combineReducers} from 'redux';
 import thunkMiddleware from 'redux-thunk'
 import listaFotos from './reducers/listaFotos';
+import notificacao from './reducers/notificacao';
 
 class App extends Component {
 
   constructor(){
     super();
-    this.store = createStore(listaFotos, applyMiddleware(thunkMiddleware));    
+
+    const reducers = combineReducers({
+      listaFotos,
+      notificacao
+    });
+
+    this.store = createStore(reducers, applyMiddleware(thunkMiddleware));    
   }
 
   render() {          

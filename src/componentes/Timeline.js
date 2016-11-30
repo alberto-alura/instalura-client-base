@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import FotoItem from './FotoItem';
 import PubSub from 'pubsub-js';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
-import TimelineAction from '../actions/TimelineAction';
+import TimelineStore from '../actions/TimelineStore';
 
 
 export default class Timeline extends Component {
@@ -20,7 +20,7 @@ export default class Timeline extends Component {
 		this.urlTimeline = urlTimeline;		
 		this.state = {fotos:[]};
 		this.carregaFotos = this.carregaFotos.bind(this);		
-		this.timelineAction = new TimelineAction(this.state.fotos);				 		
+		this.timelineStore = new TimelineStore(this.state.fotos);				 		
 	}	
 
 	componentWillMount(){
@@ -35,7 +35,7 @@ export default class Timeline extends Component {
 				return response.json();
 			})
 			.then(fotos => {	
-				this.timelineAction = new TimelineAction(fotos);			
+				this.timelineStore = new TimelineStore(fotos);			
 				this.setState({fotos});
 			});		
 	}	
@@ -52,11 +52,11 @@ export default class Timeline extends Component {
 	}
 
   like(fotoId,likeada) {		
-	this.timelineAction.like(fotoId,likeada);	  
+	this.timelineStore.like(fotoId,likeada);	  
   }
 
   comenta(fotoId,texto){		
-	  this.timelineAction.comenta(fotoId,texto);
+	  this.timelineStore.comenta(fotoId,texto);
   }
 
 

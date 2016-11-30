@@ -10,8 +10,14 @@ export default function listaFotos(state=[],action){
             fotoAchada.likers.push(liker);
         } else {
             fotoAchada.likers = fotoAchada.likers.filter( liker => liker.login !== liker.login);
-        }
-
-        return state;       
+        }             
     }
+
+    if(action.type === 'COMENTARIO') {
+        const {fotoId,novoComentario} = action;
+        const fotoAchada = state.filter(foto => foto.id === fotoId)[0];
+        fotoAchada.comentarios = fotoAchada.comentarios.concat(novoComentario);            
+    }
+
+    return state;
 }

@@ -33,16 +33,16 @@ export default class Timeline extends Component {
 	componentWillReceiveProps(nextProps){		
 		if(nextProps.login !== undefined){
 			this.urlTimeline = `http://localhost:8080/api/public/fotos/${nextProps.login}`;
-			this.props.timelineStore.lista(this.urlTimeline);
+			this.props.store.dispatch(TimelineStore.lista(this.urlTimeline));
 		}
 	}
 
   like(fotoId,likeada) {		
-	this.props.store.like(Timeline.like(fotoId,likeada));	  
+	this.props.store.dispatch(TimelineStore.like(fotoId,likeada));	  
   }
 
   comenta(fotoId,texto){		
-	  this.props.timelineStore.comenta(fotoId,texto);
+	  this.props.store.dispatch(TimelineStore.comenta(fotoId,texto));
   }
 
 

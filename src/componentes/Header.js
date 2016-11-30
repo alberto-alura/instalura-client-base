@@ -3,6 +3,12 @@ import React, { Component } from 'react';
 
 export default class Header extends Component {
 
+  componentWillMount(){
+    this.props.timelineStore.subscribe(fotos => {
+			console.log(fotos.length);
+		});
+  }
+
   busca(event){
     event.preventDefault();
     this.props.timelineStore.pesquisa(this.login.value);    

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import FotoItem from './FotoItem';
-import PubSub from 'pubsub-js';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
 
 

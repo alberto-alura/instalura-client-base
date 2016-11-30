@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FotoItem from './FotoItem';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
-import TimelineApi from '../actions/TimelineApi';
+import TimelineApi from '../api/TimelineApi';
 
 
 export default class Timeline extends Component {

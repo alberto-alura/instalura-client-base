@@ -28,5 +28,29 @@ export default class TimelineAction {
 				}                
                 PubSub.publish("timeline",{fotos:this.listaFotos});                
 			})        
-    }    
+    }
+
+    comenta(fotoId,texto){
+		const requestInfo = {
+			method:'POST',
+			body:JSON.stringify({texto}),
+			headers: new Headers({
+				'Content-Type':'application/json'	
+			})			
+		};
+
+		fetch(`http://localhost:8080/api/fotos/${fotoId}/comment?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
+			.then(response => {
+				if(response.ok){
+					return response.json();											
+				} else {
+					console.error("nao foi possivel fazer o comentario");
+				}
+			})
+			.then(novoComentario => {	
+                const fotoAchada = this.listaFotos.filter(foto => foto.id === fotoId)[0];
+                fotoAchada.comentarios = fotoAchada.comentarios.concat(novoComentario); 
+                PubSub.publish("timeline",{fotos:this.listaFotos});                               												
+			})
+    }        
 }

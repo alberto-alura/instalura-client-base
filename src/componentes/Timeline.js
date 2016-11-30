@@ -27,12 +27,6 @@ export default class Timeline extends Component {
 		PubSub.subscribe('timeline',(topic,{fotos}) => {						
 			this.setState({fotos});
 		});	 
-
-		PubSub.subscribe("adiciona-comentario",(msg,object) => {
-			const fotoAchada = this.state.fotos.filter(foto => foto.id === object.fotoId)[0];
-			fotoAchada.comentarios = fotoAchada.comentarios.concat(object.novoComentario);
-			this.setState({fotos:this.state.fotos});
-		});		
 	}
 
 	carregaFotos(){		
@@ -61,29 +55,9 @@ export default class Timeline extends Component {
 	this.timelineAction.like(fotoId,likeada);	  
   }
 
-	comenta(fotoId,texto){
-		event.preventDefault();
-		const requestInfo = {
-			method:'POST',
-			body:JSON.stringify({texto}),
-			headers: new Headers({
-				'Content-Type':'application/json'	
-			})			
-		};
-
-		fetch(`http://localhost:8080/api/fotos/${fotoId}/comment?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
-			.then(response => {
-				if(response.ok){
-					return response.json();											
-				} else {
-					console.error("nao foi possivel fazer o comentario");
-				}
-			})
-			.then(novoComentario => {								
-					PubSub.publish("adiciona-comentario",{fotoId,novoComentario});
-			})		
-
-	}
+  comenta(fotoId,texto){		
+	  this.timelineAction.comenta(fotoId,texto);
+  }
 
 
 

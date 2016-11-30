@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FotoItem from './FotoItem';
 import PubSub from 'pubsub-js';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
+import TimelineAction from '../actions/TimelineAction';
 
 
 export default class Timeline extends Component {
@@ -15,26 +16,16 @@ export default class Timeline extends Component {
 		} else {
 			urlTimeline = `http://localhost:8080/api/public/fotos/${props.login}`;
 		}	
+
 		this.urlTimeline = urlTimeline;		
 		this.state = {fotos:[]};
-		this.carregaFotos = this.carregaFotos.bind(this);				 		
+		this.carregaFotos = this.carregaFotos.bind(this);		
+		this.timelineAction = new TimelineAction(this.state.fotos);				 		
 	}	
 
 	componentWillMount(){
-		PubSub.subscribe('timeline',(topic,{fotos}) => {			
+		PubSub.subscribe('timeline',(topic,{fotos}) => {						
 			this.setState({fotos});
-		});
-
-		PubSub.subscribe("adiciona-liker",(msg,object) => {
-			const fotoAchada = this.state.fotos.filter(foto => foto.id === object.fotoId)[0];
-			fotoAchada.likers.push(object.liker);					
-			this.setState({fotos:this.state.fotos});
-		});
-
-		PubSub.subscribe("remove-liker",(msg,object) => {
-			const fotoAchada = this.state.fotos.filter(foto => foto.id === object.fotoId)[0];
-			fotoAchada.likers = fotoAchada.likers.filter( liker => liker.login !== object.liker.login);			
-			this.setState({fotos:this.state.fotos});
 		});	 
 
 		PubSub.subscribe("adiciona-comentario",(msg,object) => {
@@ -49,7 +40,8 @@ export default class Timeline extends Component {
 			.then(response => {
 				return response.json();
 			})
-			.then(fotos => {				
+			.then(fotos => {	
+				this.timelineAction = new TimelineAction(fotos);			
 				this.setState({fotos});
 			});		
 	}	
@@ -66,26 +58,8 @@ export default class Timeline extends Component {
 	}
 
   like(fotoId,likeada) {		
-		const requestInfo = {
-			method:'POST'
-		};
-
-		fetch(`http://localhost:8080/api/fotos/${fotoId}/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`,requestInfo)
-			.then(response => {
-				if(response.ok){
-					return response.json();											
-				} else {
-					console.error("nao foi possivel fazer o like/dislike");
-				}
-			})
-			.then(liker => {								
-				if(likeada) {
-					PubSub.publish("adiciona-liker",{fotoId,liker});
-				} else {
-					PubSub.publish("remove-liker",{fotoId,liker});
-				}
-			})				
-	}
+	this.timelineAction.like(fotoId,likeada);	  
+  }
 
 	comenta(fotoId,texto){
 		event.preventDefault();

@@ -74,5 +74,11 @@ export default class TimelineStore {
 				this.listaFotos = fotos;				
 				PubSub.publish('timeline',{fotos:this.listaFotos});
 			});		
-	}	     
+	}	
+
+	subscribe(callback) {
+		PubSub.subscribe('timeline',(topic,{fotos}) => {						
+			callback(fotos);
+		});		
+	}     
 }

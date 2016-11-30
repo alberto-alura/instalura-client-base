@@ -21,9 +21,9 @@ export default class Timeline extends Component {
 	}	
 
 	componentWillMount(){
-		PubSub.subscribe('timeline',(topic,{fotos}) => {						
+		this.props.timelineStore.subscribe(fotos => {
 			this.setState({fotos});
-		});	 
+		});		 
 	}
 
 	componentDidMount(){			

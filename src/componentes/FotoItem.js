@@ -79,7 +79,7 @@ class FotoAtualizacoes extends Component {
 
 	constructor(props){
 		super();
-		this.state = {likeada : props.foto.likeada,comentario:''};
+		this.state = {comentario:''};
 	}
 
 	lidaComInput(event){
@@ -88,10 +88,7 @@ class FotoAtualizacoes extends Component {
 
 	like(event){
 		event.preventDefault();
-		const likeada = !this.state.likeada;
-		this.setState({likeada});
-
-		this.props.likeCallback(this.props.foto.id,likeada);
+		this.props.likeCallback(this.props.foto.id,!this.props.foto.likeada);
 	}	
 
 	comenta(event){
@@ -102,7 +99,7 @@ class FotoAtualizacoes extends Component {
 	render(){
 		return (
             <section className="fotoAtualizacoes">
-              <a onClick={this.like.bind(this)} className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
+              <a onClick={this.like.bind(this)} className={this.props.foto.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
               <form className="fotoAtualizacoes-form" onSubmit={this.comenta.bind(this)}>
                 <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" required onChange={this.lidaComInput.bind(this)}/>
                 <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit"/>

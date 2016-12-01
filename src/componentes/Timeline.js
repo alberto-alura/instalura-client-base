@@ -9,6 +9,7 @@ class Timeline extends Component {
 
 	constructor(props){
 		super();
+		this.login = props.login;
 		let urlTimeline;
 		if(props.login === undefined) {
 			urlTimeline = `http://localhost:8080/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
@@ -20,17 +21,18 @@ class Timeline extends Component {
 	}	
 
 	componentDidMount(){			
-		this.props.listaCallback(this.urlTimeline);
+		this.props.lista(this.urlTimeline);
 	}
 
-	componentWillReceiveProps(nextProps){		
-		if(nextProps.login !== undefined){
-			this.urlTimeline = `http://localhost:8080/api/public/fotos/${nextProps.login}`;			
-			this.props.listaCallback(this.urlTimeline);
+	componentWillReceiveProps(nextProps){				
+		if(nextProps.login !== this.login){
+			this.login = nextProps.login;
+			this.urlTimeline = `http://localhost:8080/api/public/fotos/${this.login}`;			
+			this.props.lista(this.urlTimeline);
 		}
 	}
 
-	render(){
+	render(){		
         return (<div className="fotos container">
 			<ReactCSSTransitionGroup 
 			transitionName="timeline"
@@ -38,7 +40,7 @@ class Timeline extends Component {
             transitionLeaveTimeout={300}>		
 						{
 							this.props.fotos.map(foto => {
-								return <FotoItem key={foto.id} foto={foto} comentaCallback={this.props.comentaCallback} likeCallback={this.props.likeCallback}/>;
+								return <FotoItem key={foto.id} foto={foto} comentaCallback={this.props.comenta} likeCallback={this.props.like}/>;
 							})
 						} 
 			</ReactCSSTransitionGroup>         			                   		
@@ -47,7 +49,7 @@ class Timeline extends Component {
 	}
 }
 
-const mapStateToProps = (state) => {    
+const mapStateToProps = (state) => {        
   return {
     fotos: state.listaFotos
   };
@@ -55,13 +57,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    likeCallback: (fotoId) => {		
+    like: (fotoId) => {		
 		dispatch(TimelineApi.like(fotoId));    
     },
-    comentaCallback: (fotoId,texto) => {		
+    comenta: (fotoId,texto) => {		
 		dispatch(TimelineApi.comenta(fotoId,texto));    	
     },
-	listaCallback: (urlTimeline) => {
+	lista: (urlTimeline) => {
 		dispatch(TimelineApi.lista(urlTimeline));
 	}
   }

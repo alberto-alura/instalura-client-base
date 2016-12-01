@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import FotoItem from './FotoItem';
 import ReactCSSTransitionGroup  from 'react/lib/ReactCSSTransitionGroup';
 import TimelineApi from '../api/TimelineApi';
+import { connect } from 'react-redux'
 
-
-export default class Timeline extends Component {
+class Timeline extends Component {
 	
 
 	constructor(props){
@@ -16,36 +16,19 @@ export default class Timeline extends Component {
 			urlTimeline = `http://localhost:8080/api/public/fotos/${props.login}`;
 		}	
 
-		this.urlTimeline = urlTimeline;		
-		this.state = {fotos:[]};										 		
+		this.urlTimeline = urlTimeline;														 		
 	}	
 
-	componentWillMount(){
-		this.props.store.subscribe(() => {			
-			this.setState({fotos:this.props.store.getState().listaFotos});
-		});		 
-	}
-
 	componentDidMount(){			
-		this.props.store.dispatch(TimelineApi.lista(this.urlTimeline));
+		this.props.listaCallback(this.urlTimeline);
 	}
 
 	componentWillReceiveProps(nextProps){		
 		if(nextProps.login !== undefined){
-			this.urlTimeline = `http://localhost:8080/api/public/fotos/${nextProps.login}`;
-			this.props.store.dispatch(TimelineApi.lista(this.urlTimeline));
+			this.urlTimeline = `http://localhost:8080/api/public/fotos/${nextProps.login}`;			
+			this.props.listaCallback(this.urlTimeline);
 		}
 	}
-
-  like(fotoId,likeada) {		
-	this.props.store.dispatch(TimelineApi.like(fotoId,likeada));	  
-  }
-
-  comenta(fotoId,texto){		
-	  this.props.store.dispatch(TimelineApi.comenta(fotoId,texto));
-  }
-
-
 
 	render(){
         return (<div className="fotos container">
@@ -54,8 +37,8 @@ export default class Timeline extends Component {
 		    transitionEnterTimeout={500}
             transitionLeaveTimeout={300}>		
 						{
-							this.state.fotos.map(foto => {
-								return <FotoItem key={foto.id} foto={foto} comentaCallback={this.comenta.bind(this)} likeCallback={this.like.bind(this)}/>;
+							this.props.fotos.map(foto => {
+								return <FotoItem key={foto.id} foto={foto} comentaCallback={this.props.comentaCallback} likeCallback={this.props.likeCallback}/>;
 							})
 						} 
 			</ReactCSSTransitionGroup>         			                   		
@@ -63,3 +46,30 @@ export default class Timeline extends Component {
         		);
 	}
 }
+
+const mapStateToProps = (state) => {    
+  return {
+    fotos: state.listaFotos
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    likeCallback: (fotoId) => {		
+		dispatch(TimelineApi.like(fotoId));    
+    },
+    comentaCallback: (fotoId,texto) => {		
+		dispatch(TimelineApi.comenta(fotoId,texto));    	
+    },
+	listaCallback: (urlTimeline) => {
+		dispatch(TimelineApi.lista(urlTimeline));
+	}
+  }
+};
+
+const TimelineContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timeline);
+
+export default TimelineContainer

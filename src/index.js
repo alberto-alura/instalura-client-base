@@ -4,6 +4,11 @@ import App from './App';
 import Login from './componentes/Login';
 import Logout from './componentes/Logout';
 import {Router, Route,browserHistory} from 'react-router';
+import { createStore,applyMiddleware,combineReducers} from 'redux';
+import thunkMiddleware from 'redux-thunk'
+import listaFotos from './reducers/listaFotos';
+import notificacao from './reducers/notificacao';
+import { Provider } from 'react-redux'
 
 const verificaAutenticacao = (nextState, replace) => {				
 	if(localStorage.getItem("auth-token")==='undefined'){		
@@ -11,10 +16,19 @@ const verificaAutenticacao = (nextState, replace) => {
 	}	
 }
 
+const reducers = combineReducers({
+	listaFotos,
+	notificacao
+});
+
+const store = createStore(reducers, applyMiddleware(thunkMiddleware));
+
 ReactDOM.render((
-		<Router history={browserHistory}>	    	
-			<Route path="/" component={Login}/>
-			<Route path="/logout" component={Logout}/>	    	    	
-	    	<Route path="/timeline(/:login)" component={App} onEnter={verificaAutenticacao}/>	    	    	
-	    </Router>
+		<Provider store={store}>
+			<Router history={browserHistory}>	    	
+				<Route path="/" component={Login}/>
+				<Route path="/logout" component={Logout}/>	    	    	
+				<Route path="/timeline(/:login)" component={App} onEnter={verificaAutenticacao}/>	    	    	
+			</Router>
+		</Provider>
 ), document.getElementById('root'));

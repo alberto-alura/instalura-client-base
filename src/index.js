@@ -10,8 +10,9 @@ import listaFotos from './reducers/listaFotos';
 import notificacao from './reducers/notificacao';
 import { Provider } from 'react-redux'
 
-const verificaAutenticacao = (nextState, replace) => {				
-	if(localStorage.getItem("auth-token")==='undefined'){		
+const verificaAutenticacao = (nextState, replace) => {	
+	console.log(localStorage.getItem("auth-token"));			
+	if(localStorage.getItem("auth-token")===null){		
 		replace('/?msg=precisa fazer o login');
 	}	
 }
@@ -27,8 +28,9 @@ ReactDOM.render((
 		<Provider store={store}>
 			<Router history={browserHistory}>	    	
 				<Route path="/" component={Login}/>
-				<Route path="/logout" component={Logout}/>	    	    	
-				<Route path="/timeline(/:login)" component={App} onEnter={verificaAutenticacao}/>	    	    	
+				<Route path="/logout" component={Logout}/>
+				<Route path="/timeline" component={App} onEnter={verificaAutenticacao}/>	    	    	
+				<Route path="/timeline/:login" component={App} onEnter={verificaAutenticacao}/>	    	    	
 			</Router>
 		</Provider>
 ), document.getElementById('root'));

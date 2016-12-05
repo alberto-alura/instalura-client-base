@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router'
+import { browserHistory } from 'react-router';
+import '../css/login.css';
 
 
 export default class Login extends Component {
@@ -46,7 +47,10 @@ export default class Login extends Component {
 	render() {	
 		
 		return (	
-			<div>	
+			<div className='login-box'>
+				<h1 className="header-logo">
+					Instalura
+				</h1>									
 				<span>{this.state.msg}</span>					
 				<form onSubmit={this.envia}>
 					<input type="text" name="login"  value={this.state.login} onChange={this.onChangeInput.bind(this)}/>
